@@ -16,7 +16,7 @@ public class SortPanel extends JPanel implements ActionListener {
 
 	int scale = 20;
 	int count = 0;
-	int bars = 10; 
+	int bars = 10;
 
 	GridBagConstraints c = new GridBagConstraints();
 	ArrayList<Integer> arr = new ArrayList<Integer>();
@@ -25,29 +25,46 @@ public class SortPanel extends JPanel implements ActionListener {
 
 	JButton sort = new JButton("Sort");
 	JButton settings = new JButton("Settings");
-	
+	JButton reset = new JButton("Reset Bars");
+
 	SortEditor se = new SortEditor();
 
 	public SortPanel() {
 		setLayout(new GridBagLayout());
 		setFocusable(true);
 
+		// sort button
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weighty = 1.0;
+		c.weighty = 0;
+		c.weightx = 0.5;
+		c.anchor = GridBagConstraints.PAGE_START;
+		c.ipadx = 0;
+		c.gridx = 0;
+		c.gridy = 0;
+		add(sort, c);
+		sort.addActionListener(this);
+
+		// reset button
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weighty = 0;
+		c.weightx = 0.5;
+		c.anchor = GridBagConstraints.PAGE_START;
+		c.ipadx = 0;
+		c.gridx = 1;
+		c.gridy = 0;
+		add(reset, c);
+		reset.setVisible(true);
+		reset.addActionListener(this);
+
+		// settings button
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weighty = 1;
 		c.weightx = 1.0;
 		c.anchor = GridBagConstraints.PAGE_START;
 		c.ipadx = 0;
-
 		c.gridx = 0;
-		c.gridy = 0;
-
-		add(sort, c);
-		//sort.setVisible(false);
-		sort.addActionListener(this);
-		
-		c.gridx = 0; 
+		c.gridwidth = 2;
 		c.gridy = 1;
-		
 		add(settings, c);
 		settings.setVisible(true);
 		settings.addActionListener(this);
@@ -77,12 +94,25 @@ public class SortPanel extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == "Sort") {
-			selectionSort();
+			if (se.getSelectedSort() == "Bubble Sort") {
+				bubbleSort();
+			} else if (se.getSelectedSort() == "Selection Sort") {
+				selectionSort();
+			} else {
+				// do nothing
+			}
 		}
+
 		if (e.getActionCommand() == "Settings") {
 			se.setVisible(true);
 		}
-		//bars = se.getBarsValue();
+		
+		if (e.getActionCommand() == "Reset Bars") {
+			arr.clear();
+			sorted = checkSorted();
+			count = 0; 
+			generateNumbers(se.getBarsValue());
+		}
 		repaint();
 	}
 
@@ -90,7 +120,7 @@ public class SortPanel extends JPanel implements ActionListener {
 		super.paint(g);
 		g.setColor(Color.BLUE);
 		drawGraph(g);
-		g.drawString("Steps Until Sorted: " + count, 10, 40);
+		g.drawString("Swaps Until Sorted: " + count, 10, 80);
 	}
 
 	public void drawGraph(Graphics g) {
@@ -137,6 +167,27 @@ public class SortPanel extends JPanel implements ActionListener {
 
 			}
 			sorted = true;
+		}
+	}
+
+	public void bubbleSort() {
+		if (!sorted) {
+			for (int i = 0; i < arr.size() - 1; i++) {
+				for (int j = i + 1; j < arr.size(); j++) {
+					if (arr.get(j) < arr.get(i)) {
+						// swap
+						int temp = arr.get(i);
+						arr.set(i, arr.get(j));
+						arr.set(j, temp);
+						repaint();
+						count += 1;
+						sorted = checkSorted();
+						if (sorted) {
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
