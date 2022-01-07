@@ -18,6 +18,8 @@ public class SortPanel extends JPanel implements ActionListener {
 	int count = 0;
 	int bars = 10;
 
+	int start = 0;
+
 	GridBagConstraints c = new GridBagConstraints();
 	ArrayList<Integer> arr = new ArrayList<Integer>();
 
@@ -69,7 +71,7 @@ public class SortPanel extends JPanel implements ActionListener {
 		settings.setVisible(true);
 		settings.addActionListener(this);
 
-		Timer t = new Timer(100, this);
+		Timer t = new Timer(1, this);
 		t.start();
 
 		generateNumbers(bars);
@@ -106,11 +108,11 @@ public class SortPanel extends JPanel implements ActionListener {
 		if (e.getActionCommand() == "Settings") {
 			se.setVisible(true);
 		}
-		
+
 		if (e.getActionCommand() == "Reset Bars") {
 			arr.clear();
 			sorted = checkSorted();
-			count = 0; 
+			count = 0;
 			generateNumbers(se.getBarsValue());
 		}
 		repaint();
@@ -144,6 +146,7 @@ public class SortPanel extends JPanel implements ActionListener {
 	public void selectionSort() {
 		if (!sorted) {
 			for (int i = 0; i < arr.size() - 1; i++) {
+				long cur = System.currentTimeMillis();
 				int min = i;
 				for (int j = i + 1; j < arr.size(); j++) {
 					if (arr.get(j) < arr.get(min)) {
@@ -159,15 +162,34 @@ public class SortPanel extends JPanel implements ActionListener {
 				count += 1;
 				sorted = checkSorted();
 				if (sorted) { // short-circuit behavior
-					// repaint();
 					break;
 				}
-				// sleep(100);
-				// repaint();
+
+// 				figure out how to add delay? or change code
+//				delay(100);
+//				System.out.println(System.currentTimeMillis());
+//				while (System.currentTimeMillis() < cur) {
+//					
+//				}
+//				cur += 10000;
 
 			}
 			sorted = true;
 		}
+	}
+
+	public void selectionSort2(int start) {
+		int min = start;
+		for (int j = min + 1; j < arr.size(); j++) {
+			if (arr.get(j) < arr.get(min)) {
+				min = j;
+			}
+		}
+		int temp = arr.get(start);
+		arr.set(start, arr.get(min));
+		arr.set(min, temp);
+		// repaint();
+		sorted = checkSorted();
 	}
 
 	public void bubbleSort() {
@@ -196,6 +218,17 @@ public class SortPanel extends JPanel implements ActionListener {
 			Thread.sleep(millis);
 		} catch (Exception e) {
 			System.out.println(e);
+		}
+	}
+
+	public void delay(int millis) {
+		Object obj = new Object();
+		try {
+			synchronized (obj) {
+				obj.wait(millis);
+			}
+		} catch (InterruptedException ex) {
+			// SomeFishCatching
 		}
 	}
 
