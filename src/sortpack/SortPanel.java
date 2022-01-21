@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -95,11 +96,15 @@ public class SortPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		repaint();
 		if (e.getActionCommand() == "Sort") {
 			if (se.getSelectedSort() == "Bubble Sort") {
 				bubbleSort();
 			} else if (se.getSelectedSort() == "Selection Sort") {
-				selectionSort();
+				selectionSort2();
+
+			} else if (se.getSelectedSort() == "Bogo Sort") {
+				bogoSort();
 			} else {
 				// do nothing
 			}
@@ -113,6 +118,7 @@ public class SortPanel extends JPanel implements ActionListener {
 			arr.clear();
 			sorted = checkSorted();
 			count = 0;
+			start = 0;
 			generateNumbers(se.getBarsValue());
 		}
 		repaint();
@@ -122,7 +128,7 @@ public class SortPanel extends JPanel implements ActionListener {
 		super.paint(g);
 		g.setColor(Color.BLUE);
 		drawGraph(g);
-		g.drawString("Swaps Until Sorted: " + count, 10, 80);
+		g.drawString("Swaps Until Sorted: " + start, 10, 80);
 	}
 
 	public void drawGraph(Graphics g) {
@@ -133,6 +139,7 @@ public class SortPanel extends JPanel implements ActionListener {
 			int width = (this.getWidth() - margin * 2) / arr.size();
 
 			drawBar(g, margin + width * i, maxHeight - height + 125, width, height);
+			Toolkit.getDefaultToolkit().sync();
 		}
 	}
 
@@ -141,6 +148,7 @@ public class SortPanel extends JPanel implements ActionListener {
 		g.fillRect(x, y, width, height);
 		g.setColor(Color.BLACK);
 		g.drawRect(x, y, width, height);
+		Toolkit.getDefaultToolkit().sync();
 	}
 
 	public void selectionSort() {
@@ -178,18 +186,23 @@ public class SortPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	public void selectionSort2(int start) {
-		int min = start;
-		for (int j = min + 1; j < arr.size(); j++) {
-			if (arr.get(j) < arr.get(min)) {
-				min = j;
-			}
-		}
-		int temp = arr.get(start);
-		arr.set(start, arr.get(min));
-		arr.set(min, temp);
-		// repaint();
+	public void selectionSort2() {
 		sorted = checkSorted();
+		if (!sorted) {
+			int min = this.start;
+			for (int j = min + 1; j < arr.size(); j++) {
+				if (arr.get(j) < arr.get(min)) {
+					min = j;
+				}
+			}
+			int temp = arr.get(this.start);
+			arr.set(this.start, arr.get(min));
+			arr.set(min, temp);
+			this.start += 1;
+
+			// sort.doClick();
+			// repaint();
+		}
 	}
 
 	public void bubbleSort() {
@@ -213,22 +226,28 @@ public class SortPanel extends JPanel implements ActionListener {
 		}
 	}
 
+	public void bogoSort() {
+		sorted = checkSorted();
+		if (!sorted) {
+			for (int i = 0; i < this.arr.size(); i++) {
+				swap(i, randomInt(0, this.arr.size() - 1));
+				this.start += 1;
+			}
+		}
+
+	}
+
+	public void swap(int index, int swapIndex) {
+		int temp = this.arr.get(swapIndex);
+		this.arr.set(swapIndex, this.arr.get(index));
+		this.arr.set(index, temp);
+	}
+
 	public void sleep(int millis) {
 		try {
 			Thread.sleep(millis);
 		} catch (Exception e) {
 			System.out.println(e);
-		}
-	}
-
-	public void delay(int millis) {
-		Object obj = new Object();
-		try {
-			synchronized (obj) {
-				obj.wait(millis);
-			}
-		} catch (InterruptedException ex) {
-			// SomeFishCatching
 		}
 	}
 
