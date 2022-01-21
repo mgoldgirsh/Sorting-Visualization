@@ -1,12 +1,11 @@
 # Sorting Visualization
 
 ## WIP Project
-- Show sorting animation!
+- Show sorting animation! (Major work in progress) (right now works with manually clicking the button)
 - Add more variety of sorts
 - Merge Sort
 - Insertion Sort
 - Quick Sort
-- Bogo Sort
 - ...
 
 ## Main Purpose
