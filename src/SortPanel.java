@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+// the sort panel that that extends the panel component in the main frame
 public class SortPanel extends JPanel implements ActionListener {
 
   /**
