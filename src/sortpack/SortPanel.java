@@ -1,10 +1,10 @@
 package sortpack;
 
 import java.awt.Color;
+
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,254 +15,295 @@ import javax.swing.Timer;
 
 public class SortPanel extends JPanel implements ActionListener {
 
-	int scale = 20;
-	int count = 0;
-	int bars = 10;
+  /**
+   * Default Auto-generated serialize version ID
+   */
+  private static final long serialVersionUID = 1L;
 
-	int start = 0;
+  final int SCALE = 20;
+  int count = 0;
+  int start = 0;
+  int bars = 10;
 
-	GridBagConstraints c = new GridBagConstraints();
-	ArrayList<Integer> arr = new ArrayList<Integer>();
+  boolean startSorting = false;
 
-	boolean sorted = checkSorted();
+  GridBagConstraints c = new GridBagConstraints();
+  ArrayList<Integer> arr = new ArrayList<Integer>();
 
-	JButton sort = new JButton("Sort");
-	JButton settings = new JButton("Settings");
-	JButton reset = new JButton("Reset Bars");
+  boolean sorted = this.checkSorted();
 
-	SortEditor se = new SortEditor();
+  JButton sort = new JButton("Sort");
+  JButton settings = new JButton("Settings");
+  JButton reset = new JButton("Reset Bars");
 
-	public SortPanel() {
-		setLayout(new GridBagLayout());
-		setFocusable(true);
+  SortEditor se = new SortEditor();
 
-		// sort button
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weighty = 0;
-		c.weightx = 0.5;
-		c.anchor = GridBagConstraints.PAGE_START;
-		c.ipadx = 0;
-		c.gridx = 0;
-		c.gridy = 0;
-		add(sort, c);
-		sort.addActionListener(this);
+  public SortPanel() {
+    this.setLayout(new GridBagLayout());
+    this.setFocusable(true);
 
-		// reset button
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weighty = 0;
-		c.weightx = 0.5;
-		c.anchor = GridBagConstraints.PAGE_START;
-		c.ipadx = 0;
-		c.gridx = 1;
-		c.gridy = 0;
-		add(reset, c);
-		reset.setVisible(true);
-		reset.addActionListener(this);
+    // sort button
+    this.c.fill = GridBagConstraints.HORIZONTAL;
+    this.c.weighty = 0;
+    this.c.weightx = 0.5;
+    this.c.anchor = GridBagConstraints.PAGE_START;
+    this.c.ipadx = 0;
+    this.c.gridx = 0;
+    this.c.gridy = 0;
+    this.add(this.sort, this.c);
+    this.sort.addActionListener(this);
 
-		// settings button
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weighty = 1;
-		c.weightx = 1.0;
-		c.anchor = GridBagConstraints.PAGE_START;
-		c.ipadx = 0;
-		c.gridx = 0;
-		c.gridwidth = 2;
-		c.gridy = 1;
-		add(settings, c);
-		settings.setVisible(true);
-		settings.addActionListener(this);
+    // reset button
+    this.c.fill = GridBagConstraints.HORIZONTAL;
+    this.c.weighty = 0;
+    this.c.weightx = 0.5;
+    this.c.anchor = GridBagConstraints.PAGE_START;
+    this.c.ipadx = 0;
+    this.c.gridx = 1;
+    this.c.gridy = 0;
+    this.add(this.reset, this.c);
+    this.reset.setVisible(true);
+    this.reset.addActionListener(this);
 
-		Timer t = new Timer(1, this);
-		t.start();
+    // settings button
+    this.c.fill = GridBagConstraints.HORIZONTAL;
+    this.c.weighty = 1;
+    this.c.weightx = 1.0;
+    this.c.anchor = GridBagConstraints.PAGE_START;
+    this.c.ipadx = 0;
+    this.c.gridx = 0;
+    this.c.gridwidth = 2;
+    this.c.gridy = 1;
+    this.add(this.settings, this.c);
+    this.settings.setVisible(true);
+    this.settings.addActionListener(this);
 
-		generateNumbers(bars);
-	}
+    // start the timer with 100 ms tick
+    Timer t = new Timer(100, this);
+    t.start();
 
-	public int randomInt(int min, int max) {
-		return (int) ((max - min + 1) * Math.random());
-	}
+    // generates this arraylist with the certain number of bars specified.
+    this.generateNumbers(this.bars);
+  }
 
-	public void generateNumbers(int n) {
-		ArrayList<Integer> arrTen = new ArrayList<Integer>();
-		for (int i = 1; i < n + 1; i++) {
-			arrTen.add(i);
-		}
+  public int randomInt(int min, int max) {
+    return (int) ((max - min + 1) * Math.random());
+  }
 
-		while (arrTen.size() >= 1) {
-			int random = randomInt(1, arrTen.size());
-			arr.add(scale * arrTen.get(random));
-			arrTen.remove(random);
-		}
-	}
+  public void generateNumbers(int n) {
+    ArrayList<Integer> arrTen = new ArrayList<Integer>();
+    for (int i = 1; i < n + 1; i++) {
+      arrTen.add(i);
+    }
 
-	public void actionPerformed(ActionEvent e) {
-		repaint();
-		if (e.getActionCommand() == "Sort") {
-			if (se.getSelectedSort() == "Bubble Sort") {
-				bubbleSort();
-			} else if (se.getSelectedSort() == "Selection Sort") {
-				selectionSort2();
+    while (arrTen.size() >= 1) {
+      int random = this.randomInt(1, arrTen.size());
+      this.arr.add(this.SCALE * arrTen.get(random));
+      arrTen.remove(random);
+    }
+  }
 
-			} else if (se.getSelectedSort() == "Bogo Sort") {
-				bogoSort();
-			} else {
-				// do nothing
-			}
-		}
+  public void actionPerformed(ActionEvent e) {
 
-		if (e.getActionCommand() == "Settings") {
-			se.setVisible(true);
-		}
+    if (this.startSorting) {
+      if (this.se.getSelectedSort() == "Selection Sort") {
+        this.selectionSort();
+        this.sleep(100);
+      }
+      else if (this.se.getSelectedSort() == "Bubble Sort") {
+        this.bubbleSort();
+        this.sleep(100);
+      }
+      else if (this.se.getSelectedSort() == "Bogo Sort") {
+        this.bogoSort();
+        this.sleep(100);
+      }
+      else if (this.se.getSelectedSort() == "Insertion Sort") {
+        ArrayList<Integer> newArr = new ArrayList<>();
+        this.insertionSort(newArr);
+        this.sleep(100);
+      }
+      else if (this.se.getSelectedSort() == "Quick Sort") {
+        this.quickSort();
+        this.sleep(100);
+      }
+      else if (this.se.getSelectedSort() == "Merge Sort") {
+        this.mergeSort();
+        this.sleep(100);
+      }
+      else if (this.se.getSelectedSort() == "Heap Sort") {
+        this.heapSort();
+        this.sleep(100);
+      }
 
-		if (e.getActionCommand() == "Reset Bars") {
-			arr.clear();
-			sorted = checkSorted();
-			count = 0;
-			start = 0;
-			generateNumbers(se.getBarsValue());
-		}
-		repaint();
-	}
+      if (this.sorted) {
+        this.startSorting = false;
+      }
+    }
 
-	public void paint(Graphics g) {
-		super.paint(g);
-		g.setColor(Color.BLUE);
-		drawGraph(g);
-		g.drawString("Swaps Until Sorted: " + start, 10, 80);
-	}
+    if (e.getActionCommand() == "Sort") {
+      this.startSorting = true;
+    }
 
-	public void drawGraph(Graphics g) {
-		for (int i = 0; i < arr.size(); i++) {
-			int margin = 10;
-			int height = arr.get(i);
-			int maxHeight = scale * arr.size();
-			int width = (this.getWidth() - margin * 2) / arr.size();
+    if (e.getActionCommand() == "Settings") {
+      this.se.setVisible(true);
+    }
 
-			drawBar(g, margin + width * i, maxHeight - height + 125, width, height);
-			Toolkit.getDefaultToolkit().sync();
-		}
-	}
+    if (e.getActionCommand() == "Reset Bars") {
+      this.arr.clear();
+      this.sorted = this.checkSorted();
+      this.count = 0;
+      this.start = 0;
+      this.startSorting = false;
+      this.generateNumbers(this.se.getBarsValue());
+    }
 
-	public void drawBar(Graphics g, int x, int y, int width, int height) {
-		g.setColor(Color.BLUE);
-		g.fillRect(x, y, width, height);
-		g.setColor(Color.BLACK);
-		g.drawRect(x, y, width, height);
-		Toolkit.getDefaultToolkit().sync();
-	}
+    this.repaint();
+  }
 
-	public void selectionSort() {
-		if (!sorted) {
-			for (int i = 0; i < arr.size() - 1; i++) {
-				long cur = System.currentTimeMillis();
-				int min = i;
-				for (int j = i + 1; j < arr.size(); j++) {
-					if (arr.get(j) < arr.get(min)) {
-						min = j;
-					}
-				}
+  public void paint(Graphics g) {
+    super.paint(g);
+    g.setColor(Color.BLUE);
+    this.drawGraph(g, this.sorted);
+    g.drawString("Swaps Until Sorted: " + this.count, 10, 80);
+  }
 
-				// swap
-				int temp = arr.get(i);
-				arr.set(i, arr.get(min));
-				arr.set(min, temp);
-				repaint();
-				count += 1;
-				sorted = checkSorted();
-				if (sorted) { // short-circuit behavior
-					break;
-				}
+  public void drawGraph(Graphics g, boolean color) {
+    for (int i = 0; i < this.arr.size(); i++) {
+      int margin = 10;
+      int height = this.arr.get(i);
+      int maxHeight = this.getHeight();
+      int width = (this.getWidth() - margin * 2) / this.arr.size();
 
-// 				figure out how to add delay? or change code
-//				delay(100);
-//				System.out.println(System.currentTimeMillis());
-//				while (System.currentTimeMillis() < cur) {
-//					
-//				}
-//				cur += 10000;
+      this.drawBar(g, margin + width * i, maxHeight - height - margin, width, height, color);
+    }
+  }
 
-			}
-			sorted = true;
-		}
-	}
+  public void drawBar(Graphics g, int x, int y, int width, int height, boolean color) {
+    if (!color) {
+      g.setColor(Color.BLUE);
+      g.fillRect(x, y, width, height);
+      g.setColor(Color.BLACK);
+      g.drawRect(x, y, width, height);
+    }
+    else {
+      g.setColor(Color.GREEN);
+      g.fillRect(x, y, width, height);
+      g.setColor(Color.BLACK);
+      g.drawRect(x, y, width, height);
+    }
+  }
 
-	public void selectionSort2() {
-		sorted = checkSorted();
-		if (!sorted) {
-			int min = this.start;
-			for (int j = min + 1; j < arr.size(); j++) {
-				if (arr.get(j) < arr.get(min)) {
-					min = j;
-				}
-			}
-			int temp = arr.get(this.start);
-			arr.set(this.start, arr.get(min));
-			arr.set(min, temp);
-			this.start += 1;
+  public void selectionSort() {
+    this.sorted = this.checkSorted();
+    if (!this.sorted) {
+      int min = this.count;
+      for (int j = min + 1; j < this.arr.size(); j++) {
+        if (this.arr.get(j) < this.arr.get(min)) {
+          min = j;
+        }
+      }
+      this.swap(this.count, min);
+      this.count += 1;
 
-			// sort.doClick();
-			// repaint();
-		}
-	}
+    }
+  }
 
-	public void bubbleSort() {
-		if (!sorted) {
-			for (int i = 0; i < arr.size() - 1; i++) {
-				for (int j = i + 1; j < arr.size(); j++) {
-					if (arr.get(j) < arr.get(i)) {
-						// swap
-						int temp = arr.get(i);
-						arr.set(i, arr.get(j));
-						arr.set(j, temp);
-						repaint();
-						count += 1;
-						sorted = checkSorted();
-						if (sorted) {
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
+  public void bubbleSort() {
+    if (!this.sorted) {
+      if (this.start >= this.arr.size() - 1) {
+        this.start = 0;
+      }
 
-	public void bogoSort() {
-		sorted = checkSorted();
-		if (!sorted) {
-			for (int i = 0; i < this.arr.size(); i++) {
-				swap(i, randomInt(0, this.arr.size() - 1));
-				this.start += 1;
-			}
-		}
+      if (this.arr.get(this.start) > this.arr.get(this.start + 1)) {
+        this.swap(this.start, this.start + 1);
+        this.count += 1;
+      }
+      this.start += 1;
+      this.sorted = this.checkSorted();
+    }
+  }
 
-	}
+  public void bogoSort() {
+    this.sorted = this.checkSorted();
+    if (!this.sorted) {
+      for (int i = 0; i < this.arr.size(); i++) {
+        this.swap(i, this.randomInt(0, this.arr.size() - 1));
+        this.count += 1;
+        this.sorted = this.checkSorted();
+        if (this.sorted) {
+          break;
+        }
+      }
+    }
+  }
 
-	public void swap(int index, int swapIndex) {
-		int temp = this.arr.get(swapIndex);
-		this.arr.set(swapIndex, this.arr.get(index));
-		this.arr.set(index, temp);
-	}
+  public void insertionSort(ArrayList<Integer> newArr) {
+    this.sorted = this.checkSorted();
+    if (!this.sorted) {
+      // unsure how to visualize this
+      // need to figure it out
+      return;
+    }
+  }
 
-	public void sleep(int millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
+  public void heapSort() {
+    this.sorted = this.checkSorted();
+    if (!this.sorted) {
+      // need to add upheap and downheap
+      // and the resultant list is sorted
+      return;
+    }
+  }
 
-	public boolean checkSorted() {
-		if (arr.size() == 0) {
-			return false;
-		}
-		for (int i = 0; i < arr.size() - 1; i++) {
-			for (int j = i + 1; j < arr.size(); j++) {
-				if (arr.get(i) > arr.get(j)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+  public void quickSort() {
+    this.sorted = this.checkSorted();
+    if (!this.sorted) {
+      // add pivot element
+      return;
+    }
+  }
 
+  public void mergeSort() {
+    this.sorted = this.checkSorted();
+    if (!this.sorted) {
+      // add merge of two lists
+      return;
+    }
+  }
+
+  // swaps two elements at certain indecies in the
+  // arraylist
+  public void swap(int index, int swapIndex) {
+    int temp = this.arr.get(swapIndex);
+    this.arr.set(swapIndex, this.arr.get(index));
+    this.arr.set(index, temp);
+  }
+
+  // delays the task from running for a certain number of
+  // milliseconds
+  public void sleep(int millis) {
+    try {
+      Thread.sleep(millis);
+    }
+    catch (Exception e) {
+      System.out.println(e);
+    }
+  }
+
+  // determines whether this arr is sorted
+  // and produces the boolean result
+  public boolean checkSorted() {
+    if (this.arr.size() == 0) {
+      return false;
+    }
+    for (int i = 0; i < this.arr.size() - 1; i++) {
+      for (int j = i + 1; j < this.arr.size(); j++) {
+        if (this.arr.get(i) > this.arr.get(j)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }
