@@ -9,3 +9,7 @@ Tracks the number of swaps required for sort to be completed.
 - Quick Sort
 - Heap Sort
 
+## How To Install
+1. Git clone the repository.
+2. Run the repository in a Java Runtime Environment
+3. Play around and have fun with it.
