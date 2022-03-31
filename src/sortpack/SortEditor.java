@@ -14,89 +14,77 @@ import javax.swing.Timer;
 
 public class SortEditor implements ActionListener {
 
-	String[] sortExamples = { 
-			"Selection Sort", 
-			"Bubble Sort", 
-			"Insertion Sort", 
-			"Quick Sort", 
-			"Bogo Sort",
-			"Merge Sort" };
+  String[] sortExamples = { "Selection Sort", "Bubble Sort", "Insertion Sort", "Quick Sort",
+      "Bogo Sort", "Merge Sort", "Heap Sort" };
 
-	JFrame f = new JFrame();
-	GridBagConstraints c = new GridBagConstraints();
+  JFrame f = new JFrame("Settings");
+  GridBagConstraints c = new GridBagConstraints();
 
-	JLabel heading = new JLabel("Settings");
+  JLabel barsLabel = new JLabel("Bar Count: ");
+  JSlider barsSlider = new JSlider(JSlider.HORIZONTAL, 10, 30, 10);
 
-	JLabel barsLabel = new JLabel("Bar Count: ");
-	JSlider barsSlider = new JSlider(JSlider.HORIZONTAL, 10, 100, 10);
+  JLabel sortType = new JLabel("Sort Type: ");
+  JComboBox<String> sortList = new JComboBox<String>(this.sortExamples);
 
-	JLabel sortType = new JLabel("Sort Type: ");
-	JComboBox<String> sortList = new JComboBox<String>(sortExamples);
+  SortEditor() {
+    this.f.setLayout(new GridBagLayout());
+    this.f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    this.f.setSize(300, 200);
+    this.f.setVisible(false);
 
-	SortEditor() {
-		f.setLayout(new GridBagLayout());
-		f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		f.setSize(300, 200);
-		f.setVisible(false);
+    this.c.fill = GridBagConstraints.HORIZONTAL;
+    this.c.weighty = 0;
+    this.c.weightx = 1;
+    this.c.insets = new Insets(10, 10, 10, 10);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weighty = 0;
-		c.weightx = 1;
-		c.insets = new Insets(10, 10, 10, 10);
+    this.c.fill = GridBagConstraints.HORIZONTAL;
+    this.c.weighty = 0;
+    this.c.weightx = 1;
+    this.c.gridwidth = 1;
+    this.c.insets = new Insets(10, 10, 0, 0);
 
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 2;
-		f.add(heading, c);
+    this.c.gridx = 0;
+    this.c.gridy = 0;
+    this.f.add(this.barsLabel, this.c);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weighty = 0;
-		c.weightx = 1;
-		c.gridwidth = 1;
-		c.insets = new Insets(10, 10, 0, 0);
+    this.c.gridx = 1;
+    this.c.gridy = 0;
+    this.c.insets = new Insets(10, 0, 0, 10);
+    this.f.add(this.barsSlider, this.c);
 
-		c.gridx = 0;
-		c.gridy = 1;
-		f.add(barsLabel, c);
+    this.c.gridx = 0;
+    this.c.gridy = 1;
+    this.c.gridwidth = 2;
+    this.c.insets = new Insets(30, 10, 0, 10);
+    this.f.add(this.sortType, this.c);
 
-		c.gridx = 1;
-		c.gridy = 1;
-		c.insets = new Insets(10, 0, 0, 10);
-		f.add(barsSlider, c);
+    this.c.gridx = 0;
+    this.c.gridy = 2;
+    this.c.gridwidth = 2;
+    this.c.insets = new Insets(10, 10, 0, 10);
+    this.f.add(this.sortList, this.c);
 
-		c.gridx = 0;
-		c.gridy = 2;
-		c.gridwidth = 2;
-		c.insets = new Insets(10, 10, 0, 10);
-		f.add(sortType, c);
+    this.sortList.setEditable(false);
+    this.sortList.addActionListener(this);
 
-		c.gridx = 0;
-		c.gridy = 3;
-		c.gridwidth = 2;
-		c.insets = new Insets(10, 10, 0, 10);
-		f.add(sortList, c);
+    Timer t = new Timer(1000 / 60, this);
+    t.start();
 
-		sortList.setEditable(false);
-		sortList.addActionListener(this);
+  }
 
-		Timer t = new Timer(1000 / 60, this);
-		t.start();
+  public void actionPerformed(ActionEvent e) {
+    this.barsLabel.setText("Bar Count: " + this.barsSlider.getValue());
+  }
 
-	}
+  public int getBarsValue() {
+    return this.barsSlider.getValue();
+  }
 
-	public void actionPerformed(ActionEvent e) {
-		barsLabel.setText("Bar Count: " + barsSlider.getValue());
-	}
+  public String getSelectedSort() {
+    return (String) this.sortList.getSelectedItem();
+  }
 
-	public int getBarsValue() {
-		return barsSlider.getValue();
-	}
-
-	public String getSelectedSort() {
-		return (String) sortList.getSelectedItem();
-	}
-
-	public void setVisible(boolean b) {
-		f.setVisible(b);
-	}
+  public void setVisible(boolean b) {
+    this.f.setVisible(b);
+  }
 }
